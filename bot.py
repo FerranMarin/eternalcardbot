@@ -24,6 +24,9 @@ def logic(card):
     if len(options) == 1:
         return card_dict[options[0]]
     elif len(options) > 1:
+        for option in options:
+            if card.lower() == option.lower():
+                return card_dict[option]
         return 'Multiple options: {options}'.format(options=options)
 
 
