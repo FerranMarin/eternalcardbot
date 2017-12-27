@@ -1,3 +1,6 @@
+import matplotlib
+matplotlib.use('Agg')
+
 import re
 import json
 
@@ -34,12 +37,11 @@ def logic(card):
 
 
 def calc_hypergeo(params):
-    N, M, n, y = params[0], params[1], params[2], params[3]
-    if M < n:
-        print(something)
+    N, M, n, y = int(params[0]),int(params[1]), int(params[2]), int(params[3])
     hipergeom = stats.hypergeom(M, n, N)
     x = np.arange(0, n+1)
     fmp = hipergeom.pmf(x)
+    print(fmp)
     sfmp = list()
     sfmpyn = 0
     for index, val in enumerate(fmp):
@@ -59,7 +61,7 @@ def calc_hypergeo(params):
     plt.title('Distribución Hipergeométrica')
     plt.ylabel('Probabilidad')
     plt.xlabel('Valores')
-    plt.save('plt.jpg')
+    plt.savefig('plt.png', bbox_inches='tight')
     return sfmp0y, sfmpyn
 
 client = discord.Client()
@@ -76,30 +78,32 @@ async def on_message(message):
         if len(clean_msg) < 3:
             return
         card = logic(clean_msg)
-        print(card)
+        # print(card)
         if card:
             await client.send_message(message.channel, card)
 
     if message.content.startswith('!Hg'):
         clean_msg = message.content.replace('!Hg', '')
         params = clean_msg.split(" ")
-        if len(params) != 4:
+        print(params, len(params))   
+        if len(params) != 5:
             text = """
                 Error, se requieren estos parámetros:
                 N: Tamaño del mazo
                 M: Número de cartas deseadas en el mazo
-                n: Cantiadd de robos/turnos
+                n: Cantiad de robos/turnos
                 x: Número de copias que se quiere
             """
             await client.send_message(message.channel, text)
         else:
+            params.pop(0)
             a, b = calc_hypergeo(params)
             text = """
                 sum(0 -> X) = {a}
                 sum(X -> n) = {b}
             """.format(a=a, b=b)
             await client.send_message(message.channel, text)
-            await client.send_file(message.channel, "plt.jpg")
+            await client.send_file(message.channel, "plt.png")
 
 @client.event
 async def on_ready():
