@@ -92,10 +92,9 @@ async def on_message(message):
             await client.send_message(message.channel, text)
         else:
             a, b, c = dice(int(params[0]), int(params[1]))
-            text = "Todas las Tiradas: {a} \n"
-            text += "Resultados del 10: {b} \n"
-            text += "Resultado: {c}"
-            text.format(a=a, b=b, c=c)
+            text = "Todas las Tiradas: {a} \n".format(a=a)
+            text += "Resultados del 10: {b} \n".format(b=b)
+            text += "Resultado: {c}".format(c=c)
             await client.send_message(message.channel, text)
 
 
